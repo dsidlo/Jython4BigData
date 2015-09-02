@@ -1,0 +1,266 @@
+#!/bin/env bash
+
+#
+# Starts jython...
+#
+# Example usage:
+#
+#    For scripting
+#    #!/usr/local/bin/jython
+#  
+#    For scripting with HBase
+#    #!/usr/local/bin/jython -hbase
+#
+#    Checkout the CLASSPATH jars...
+#    > jython showcp
+#
+#    Check CLASSPATH for a given class...
+#    > jython findclass org.python.util.jython
+#
+
+export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.51.x86_64
+export PATH=${JAVA_HOME}/bin:${PATH}
+
+export JYTHON_HOME=/opt/jython_2.7.0
+export JYTHONPATH=${JYTHON_HOME}/lib
+export jython_jar=jython.jar
+
+# export JAVA_OPTS=" -XX:+UseParallelGC -XX:ParallelGCThreads=8 -Xmx128g "
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib/hadoop/lib/native:/usr/lib/hadoop//lib/native/Linux-amd64-64
+
+export HDP_VERSION=2.2.4.2-2
+
+export HADOOP_HOME="/usr/hdp/${HDP_VERSION}/hadoop"
+export HADOOP_HDFS_HOME="/usr/hdp/${HDP_VERSION}/hadoop-hdfs"
+export HADOOP_MAPR_HOME="/usr/hdp/${HDP_VERSION}/hadoop-mapreduce"
+export HADOOP_YARN_HOME="/usr/hdp/${HDP_VERSION}/hadoop-yarn"
+
+export HIVE_HOME="/usr/hdp/${HDP_VERSION}/hive"
+export HBASE_HOME="/usr/hdp/${HDP_VERSION}/hbase"
+export ZOOKEEPER_HOME="/usr/hdp/${HDP_VERSION}/zookeeper"
+export ES_HOME="/usr/share/elasticsearch"
+export KAFKA_HOME="/opt/jython_2.7.0/javalib/kafka"
+
+opt_hadoop=0
+opt_hbase=0
+opt_esearch=0
+opt_kafka=0
+opt_help=0
+opt_showcp=0
+opt_findcp=0
+opt_findcp_parm=""
+opt_findpkg=0
+opt_findpkg_parm=""
+
+#
+# The following parameter parsing loop handles cli execution,
+#     > jython --hadoop --findcp=org.apache | less
+# as well as #! scripting...
+#     +--- myscript.py------------------------------------------------
+#     |#!/usr/local/bin/jython --hadoop --hbase --elasticsearch --
+#     |
+#     | ...
+#
+# - In the first case we can simply shift throught the parameters in $@.
+# - In the 2nd case, all of the options are bundled into $1, and the
+#   path the the script is in $2.
+#
+
+ex_it=0
+while [[ $# > 0 ]]
+do
+    for key in $1; do
+
+	keyparm=$key
+	# echo "-1-> [$key]"
+	key=`echo $key | /usr/bin/perl -pe 's/^([^\=]+)\=.*/$1/'`
+	# echo "-2-> [$key]"
+
+	case $key in
+	    -o|--o|--hadoop)
+		opt_hadoop=1
+		echo "...Adding Hadoop to CLASSPATH..."
+		;;
+	    -b|--b|--hbase)
+		opt_hbase=1
+		opt_hadoop=1
+		echo "...Using HBase Initializer..."
+		;;
+	    -e|--e|--elasticsearch)
+		opt_esearch=1
+		echo "...Adding ElasticSearch to CLASSPATH..."
+		;;
+	    -k*|--k*|--kafka*)
+		opt_kafka=1
+		kver=`echo $key | perl -pe 's/[^\d\.]+([\d\.]+).*/$1/'`
+		export KAFKA_HOME="${KAFKA_HOME}_${kver}"
+		echo "...Adding Kafka_${kver} to CLASSPATH..."
+		;;
+	    -h|--h|--help)
+		opt_help=1
+		;;
+	    --showcp)
+		opt_showcp=1
+		;;
+	    --findcp)
+		# Split on = take rt-hand side string.
+		opt_findcp=1
+		opt_findcp_parm=${keyparm#--findcp=}
+		# echo "==opt_findcp==>[$opt_findcp]"
+		;;
+	    --findpkg)
+		# Split on = take rt-hand side string.
+		opt_findpkg=1
+		opt_findpkg_parm=${keyparm#--findpkg=}
+		# echo "==opt_findpkg==>[$opt_findpkg]"
+		;;
+	    --)
+		# No more parameters.
+		ex_it=1
+		# echo "-1===> [$@]"
+		# echo "-=- break 1 -=-"
+		break
+		;;
+	    *)
+		echo "Unknown parameter: [$key]"
+		ex_it=1
+		# echo "-2===> [$@]"
+		break
+		;;
+	esac
+	sleep 1
+    done
+
+    shift
+
+    if [[ $ex_it -eq 1 ]]; then
+	# echo "-=- break 2 -=-"
+	break
+    fi
+done
+
+# echo "-*===> \$\@[$@] key[$key]"
+
+# Add Hadoop Eco-System to existing ClassPath
+if [[ $opt_hadoop -eq 1 ]]
+then
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_HOME}/           -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_HOME}/lib        -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_HDFS_HOME}/      -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_HDFS_HOME}/lib   -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_MAPR_HOME}/      -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_MAPR_HOME}/lib   -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_YARN_HOME}/      -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${HADOOP_YARN_HOME}/lib   -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+    export CLASSPATH=${CLASSPATH}:`find ${HBASE_HOME}/            -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${HBASE_HOME}/lib         -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+    export CLASSPATH=${CLASSPATH}:`find ${HIVE_HOME}/             -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${HIVE_HOME}/lib          -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+    export CLASSPATH=${CLASSPATH}:`find ${ZOOKEEPER_HOME}/        -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${ZOOKEEPER_HOME}/lib     -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+fi
+
+if [[ $opt_esearch -eq 1 ]]
+then
+    export CLASSPATH=${CLASSPATH}:`find ${ES_HOME}/               -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+    export CLASSPATH=${CLASSPATH}:`find ${ES_HOME}/lib            -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+fi
+
+if [[ $opt_kafka -eq 1 ]]
+then
+    # echo "KAFKA_HOME: [${KAFKA_HOME}]"
+    export CLASSPATH=${CLASSPATH}:`find ${KAFKA_HOME}/            -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+fi
+
+export CLASSPATH=${CLASSPATH}:`find ${JYTHON_HOME}/javalib        -maxdepth 1 -type f -name '*.jar' -exec echo -n \{\}":" \;`
+
+# Add Jython to existing ClassPath
+export CLASSPATH=${CLASSPATH}:${JYTHON_HOME}/${jython_jar}
+
+if [[ $opt_help -eq 1 ]]; then
+        echo "Starts jython..."
+        echo
+        echo "Example usage:"
+        echo
+	echo "    jython [--help | -h]"
+	echo "           [--showcp]"
+	echo "           [--findpkg=<java.package>]"
+	echo "           [--findcp=<class.path>]"
+	echo "           [--hadoop | -o]"
+	echo "           [--hbase  | -b]"
+	echo "           [--elasticsearch | -e]"
+	echo "           [--kafka(ver) | -k(ver)]"
+	echo ""
+	echo ""
+        echo "    For scripting (-- is requried as the last parameter)..."
+        echo "      #!/usr/local/bin/jython --"
+        echo  
+        echo "    For scripting with Hadoop and Kafka_0.7.1 (-- is requried as the last parameter)..."
+        echo "      #!/usr/local/bin/jython --hadoop --k0.7.1 --"
+        echo
+        echo "    For scripting with HBase (assumes hadoop too),"
+        echo "    (-- is requried as the last parameter)..."
+        echo "      #!/usr/local/bin/jython --hbase --"
+        echo
+        echo "    For scripting with Hadoop and ElasticSearch,"
+        echo "    (-- is requried as the last parameter)..."
+        echo "      #!/usr/local/bin/jython --hadoop --elasticsearch --"
+        echo
+        echo "    Execute a script that relies on Hadoop jars on the cli..."
+        echo "      > jython --hadoop -- myhadoop.py"
+        echo
+        echo "    Checkout the CLASSPATH jars..."
+        echo "      > jython showcp"
+        echo
+        echo "    Check CLASSPATH for a given class..."
+        echo "      > jython --findcp=org.python.util.jython"
+        echo
+	exit 0;
+fi
+
+if [[ $opt_showcp -eq 1 ]]; then
+    echo "===CLASSPATH:==="
+    # Make each class path unique to remove dups.
+    export CLASSPATH=`echo $CLASSPATH | perl -pe 's/\:+|\ +/\n/g;$_=join(":",(sort(split("\n",$_))));'`
+    echo $CLASSPATH | perl -pe 's/\:|\ /\n/g'
+    exit 0;
+fi
+
+if [[ $opt_findcp -eq 1 ]]; then
+    if [[ $opt_findcp_parm != "" ]]; then
+	echo "Searching Classpath for: [${opt_findcp_parm}]..."
+	if [[ $opt_findpkg_parm != "" ]]; then
+	    echo "...Looking in Package: [${opt_findpkg_parm}]..."
+	fi
+	export shortCP=`echo $CLASSPATH | perl -pe 's/\:\ /\n/g' | sort -u`
+	perl -e 'foreach $j(split(/\:|\n/, $ENV{shortCP})){next if ($j!~m/.*'${opt_findpkg_parm}'.*\.jar/);$r=`jar -tvf $j \| grep "'${opt_findcp_parm}'"`;chomp $r;if($r){print "$j => [\n $r \n]\n";}}'
+	exit 0;
+    else
+	echo "*** ERROR: --findcp (Find Classpath requires a parameter.) ie: --findcp=org.apache"
+	exit 0;
+    fi
+fi
+
+if [[ $opt_hbase -eq 1 ]]
+then
+    export HBASE_LIBRARY_PATH=$LD_LIBRARY_PATH
+    export HBASE_OPTS="-Dpython.path=$JYTHON_HOME"
+    export HBASE_CLASSPATH=$JYTHON_HOME/${jython_jar}:$CLASSPATH
+    # Make each class path unique to remove dups.
+    export HBASE_CLASSPATH=`echo $HBASE_CLASSPATH | perl -pe 's/\:+|\ +/\n/g;$_=join(":",(sort(split("\n",$_))));'`
+    # echo "HBASE_CLASSPATH [${HBASE_CLASSPATH}]"
+    /usr/bin/hbase org.python.util.jython $@
+else
+    # Make each class path unique to remove dups.
+    export CLASSPATH=`echo $CLASSPATH | perl -pe 's/\:+|\ +/\n/g;$_=join(":",(sort(split("\n",$_))));'`
+    # echo "CLASSPATH [${CLASSPATH}]"
+    # echo "=====> \$\@[$@]"
+    java $JAVA_OPTS org.python.util.jython $@
+fi
+
