@@ -5,10 +5,17 @@ As the Software Dev Manager over Data Services, at Ancestry, I'm an advocate of 
 The main reason is development velocity and productivity clearly established by Python.<br>
 <p>
 Additional justifications...
+
 * Ease of access to all Java library packages.
+
 * For long running programs, Python on the JVM is performant.
+
 * Jython can leverage existing CPython modules.
+
 * Script, test, script, test... no long compiles and builds required.
+
+<p>
+Drop me a line if you find any of this useful.
 <p>
 ## Contents
 <p>
@@ -22,6 +29,8 @@ Additional justifications...
 * examples/
     * Working example Jython code.
 
-- David Sidlo
+Thanks,
+
+-David Sidlo
 
 
