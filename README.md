@@ -29,8 +29,12 @@ Drop me a line if you find any of this useful.
 * examples/
     * Working example Jython code.
 
-Thanks,
+<p>
+## Coming Soon...
+<p>
+* lib/ modules for jython...
 
+Thanks,<br>
 -dsidlo
 
 
