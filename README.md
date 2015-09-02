@@ -15,7 +15,7 @@ Additional justifications...
 * Script, test, script, test... no long compiles and builds required.
 
 <p>
-Drop me a line if you find any of this useful.
+Drop me a line if you find any of this useful, or if you have any constructive comments or insights.
 <p>
 ## Contents
 <p>
