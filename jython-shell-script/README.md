@@ -11,5 +11,3 @@ Contains library paths for a stadard HDP (HortonWorks Data Platform) 2.2 install
 * You can use it for jython scripts...
    * #!/usr/local/bin/jython27 --
 
-
-

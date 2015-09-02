@@ -3,6 +3,7 @@
 I'm an advocate of using Jython for BigData eco-system integration projects.
 <p>
 The main reason is development velocity and productivity clearly established by Python.<br>
+<p>
 Additional justifications...
 * Ease of access to all Java library packages.
 * For long running programs, Python on the JVM is performant.
