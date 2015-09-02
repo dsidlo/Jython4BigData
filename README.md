@@ -12,13 +12,13 @@ Additional justifications...
 <p>
 ## Contents
 <p>
-1. jython-shell-script/
-   2. Jython shell scripts that make it easy to include various BigData eco-system jars.
-   2. Simplify access to HBase.
+* jython-shell-script/
+    * Jython shell scripts that make it easy to include various BigData eco-system jars.
+    * Simplify access to HBase.
 
-1. lib/
-   2. Libraries to access HDFS, HBase, Elasticsearch, etc.
+* lib/
+    * Libraries to access HDFS, HBase, Elasticsearch, etc.
 
-1. examples/
-   2. Working example Jython code.
+* examples/
+    * Working example Jython code.
 
