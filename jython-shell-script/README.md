@@ -7,7 +7,9 @@ Here are some scripts that you can use to easily integrate various BigData eco-s
 Contains library paths for a stadard HDP (HortonWorks Data Platform) 2.2 installation.
 <p>
 * Rename it to jython27 . 
+
 * Move it into /usr/local/bin/ . 
+
 * You can use it for jython scripts... 
     * #!/usr/local/bin/jython27 -- 
 
