@@ -11,5 +11,5 @@ Contains library paths for a stadard HDP (HortonWorks Data Platform) 2.2 install
 * Move it into /usr/local/bin/ . 
 
 * You can use it for jython scripts... 
-    * #!/usr/local/bin/jython27 -- 
+    * \#!/usr/local/bin/jython27 -- 
 
