@@ -26,6 +26,12 @@ Drop me a line if you find any of this useful, or if you have any constructive c
 * lib/
     * Libraries to access HDFS, HBase, Elasticsearch, etc.
 
+* conf/
+    * Configuration file examples.
+
+* tests/
+    * Run tests for the lib/ modules.
+
 * examples/
     * Working example Jython code.
 

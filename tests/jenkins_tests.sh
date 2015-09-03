@@ -4,21 +4,18 @@
 # This script is used by Jenkins to run tests for the replik8db project.
 # - Tests are run prior to code review (all tests must pass).
 # - Tests may be run before package build and after deployment.
+# 
+# Note: Run this script from the main directory...
+#       > ./tests/jenkins_tests.sh
 #
 
 modules='
 ./lib/BoonJson.py
-# Sandbox tests
-./lib/HDFS.py
-./lib/HBase.py
 ./lib/Properties.py
 ./lib/WorkerThreads.py --short
-
-# ./lib/AcomKafka.py
-./lib/DbTable.py
-./lib/TableSchemas.py
-
-./replik8db.py --test
+# These tests require you host to be an HDFS and HBase client.
+./lib/HDFS.py
+./lib/HBase.py
 '
 
 IFS="
