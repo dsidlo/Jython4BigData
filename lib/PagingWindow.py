@@ -3,10 +3,11 @@
 '''
 PagingWindow.py
 
-This object allows you to page through HDFS dirs that contain
-tens of thousands of files. Paging though such as large directory
-is necessary as you local machine can will run out of memory if
-you try to load the full list of files into memory.
+This object is a generalized pager that is used by
+HDFS.py to page though dirs containing tens of thousands of files.
+Without the use of this Pager, listing a really large directory
+on your local machine can cause it to run out of memory.
+
 
 ...ramblings about this code...
 

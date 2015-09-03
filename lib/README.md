@@ -5,6 +5,10 @@
     * Required by BoonJSON.py
 * BoonJson.py
     * Wrapper for the awesome Java Boon JSON serializer/deserializer.
+* ElasticSearch.py
+    * Wrapper+ for the ElasticSearch API.
+        * Inserts/BulkInserts
+        * EsLogger: Log directly into ElasticSearch
 * HBase.py
     * HBase library for crud operations to HBase tables and rows
 * HDFS.py
