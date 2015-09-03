@@ -16,6 +16,8 @@ modules='
 # These tests require you host to be an HDFS and HBase client.
 ./lib/HDFS.py
 ./lib/HBase.py
+# Requires ElasticSearch cluster (update ./conf/ElasticSearchTest.properties
+./lib/ElasticSearch.py
 '
 
 IFS="
