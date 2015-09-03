@@ -6,7 +6,7 @@ The main reason is development velocity and productivity clearly established by 
 <p>
 Additional justifications...
 
-* Ease of access to all Java library packages.
+* Ease of access to all Java library packages. Thus, no vias such as thrift are required.
 
 * For long running programs, Python on the JVM is performant.
 
