@@ -1,6 +1,6 @@
 # Jython for BigData
 <hr>
-As the Software Dev Manager over Data Services, at Ancestry, I'm an advocate of using Jython for BigData eco-system integration projects.
+I'm an advocate of using Jython for BigData eco-system integration projects.
 <p>
 The main reason is development velocity and productivity clearly established by Python.<br>
 <p>
