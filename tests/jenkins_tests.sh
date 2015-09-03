@@ -13,10 +13,11 @@ modules='
 ./lib/BoonJson.py
 ./lib/Properties.py
 ./lib/WorkerThreads.py --short
-# These tests require you host to be an HDFS and HBase client.
+# The tests below require your host to be a client to HDFS and HBase.
 ./lib/HDFS.py
 ./lib/HBase.py
-# Requires ElasticSearch cluster (update ./conf/ElasticSearchTest.properties
+# The following tests requires an ElasticSearch cluster or host
+# Please update ./conf/ElasticSearchTest.properties accordingly.
 ./lib/ElasticSearch.py
 '
 
