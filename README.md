@@ -36,9 +36,26 @@ Drop me a line if you find any of this useful, or if you have any constructive c
     * Working example Jython code.
 
 <p>
-## Coming Soon...
+## Features.
+<p>
+* Boon JSON processor
+
+* HBase
+
+* HDFS
+
+* Properties Configuration Object
+
+* Worker Threads Model
+
+<p>
+## Planned...
 <p>
 * more examples/...
+
+* lib/Tachyon.py
+
+* lib/0mq.py
 
 Thanks,<br>
 -dsidlo
